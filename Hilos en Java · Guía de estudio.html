@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hilos en Java · Guía de estudio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Questrial&display=swap">
+<style>
+:root{--bg:#F8F9EF;--paper:#FCFDF8;--ink:#3a4756;--soft:#6f7f8c;--line:#d9e4e3;
+--bb:#E2ECE9;--pb:#FBE8EE;--b2:#C0D2E0;--b3:#A9C6DD;--blue:#4A8FC2;--blue2:#2F6FA3;--pink:#E0608D;--pink2:#C93F76;
+color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Century Gothic','CenturyGothic','Questrial','Avenir Next',sans-serif;line-height:1.75;font-size:16px}
+header{padding:48px 20px 34px;text-align:center;background:linear-gradient(135deg,var(--b3),var(--b2) 45%,var(--bb) 75%,var(--pb))}
+header h1{margin:0 0 8px;font-size:clamp(28px,5vw,42px);font-weight:400;color:var(--blue2)}
+header p{margin:0 auto;max-width:620px;color:var(--soft)}
+.layout{display:flex;gap:28px;max-width:1120px;margin:0 auto;padding:28px 16px 60px;align-items:flex-start}
+nav{position:sticky;top:20px;flex:0 0 250px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:16px 12px}
+nav .t{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink);padding:0 12px 8px}
+nav ul{list-style:none;margin:0;padding:0}
+nav li{margin:2px 0}
+nav a{display:block;text-decoration:none;color:var(--ink);font-size:14px;line-height:1.4;padding:9px 12px;border-radius:10px;border-left:3px solid transparent}
+nav a b{display:block;font-weight:400;font-size:11.5px;color:var(--soft)}
+nav a:hover{background:var(--pb)}
+nav a.on{background:var(--bb);color:var(--blue2);border-left-color:var(--pink)}
+main{flex:1;min-width:0}
+section{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:30px 28px;margin:0 0 26px;box-shadow:0 6px 22px rgba(74,143,194,.09)}
+.num{display:inline-block;background:var(--pb);border-radius:99px;padding:2px 14px;font-size:13px;color:var(--pink2);margin-bottom:6px}
+h2{margin:0 0 12px;font-size:25px;font-weight:400;color:var(--blue2);padding-bottom:10px;border-bottom:2px solid var(--pb)}
+h3{margin:26px 0 8px;font-size:18px;font-weight:400;color:var(--blue)}
+p{margin:10px 0}
+b{color:var(--pink2);font-weight:700}
+code{background:var(--pb);color:var(--pink2);padding:1px 6px;border-radius:6px;font-family:Consolas,'Courier New',monospace;font-size:.9em}
+pre{background:#EEF4F7;border:1px solid var(--b2);border-left:4px solid var(--blue);border-radius:12px;padding:16px 18px;overflow-x:auto;line-height:1.55;margin:14px 0}
+pre code{background:none;color:#2f3f63;padding:0;font-size:13.5px}
+.box{border-radius:12px;padding:12px 18px;margin:16px 0;font-size:15px;border-left:4px solid}
+.box>b:first-child{display:block;margin-bottom:2px}
+.idea{background:var(--bb);border-color:var(--blue)}.idea>b:first-child{color:var(--blue2)}
+.warn{background:var(--pb);border-color:var(--pink)}
+.ex{background:#E8F0F6;border-color:var(--b3)}.ex>b:first-child{color:var(--blue2)}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--bb);color:var(--blue2);font-weight:400}
+.tw{overflow-x:auto}
+ul{padding-left:22px}li{margin:4px 0}
+footer{text-align:center;color:var(--soft);font-size:13px;padding:0 16px 40px}
+@media(max-width:820px){.layout{flex-direction:column;gap:16px}nav{position:static;flex:none;width:100%}section{padding:22px 16px}}
+</style>
+</head>
+<body>
+<header>
+<h1>Hilos en Java</h1>
+<p>Guía de estudio de Programación de Servicios y Procesos: la teoría de los doce vídeos, explicada con calma y con ejemplos de código completos.</p>
+</header>
+<div class="layout">
+<nav>
+<div class="t">Índice</div>
+<ul>
+<li><a href="#s1">Vídeo 1<b>Creación de hilos</b></a></li>
+<li><a href="#s2">Vídeo 2<b>Clases anónimas y lambda</b></a></li>
+<li><a href="#s3">Vídeo 3<b>Información sobre hilos</b></a></li>
+<li><a href="#s4">Vídeo 4<b>Suspensión de hilos</b></a></li>
+<li><a href="#s5">Vídeo 5<b>Finalización con flags</b></a></li>
+<li><a href="#s6">Vídeo 6<b>Finalización con interrupciones</b></a></li>
+<li><a href="#s7">Vídeo 7<b>Memoria compartida</b></a></li>
+<li><a href="#s8">Vídeo 8<b>Condición de carrera y sección crítica</b></a></li>
+<li><a href="#s9">Vídeo 9<b>Monitores</b></a></li>
+<li><a href="#s10">Vídeo 10<b>Métodos y bloques sincronizados</b></a></li>
+<li><a href="#s11">Vídeo 11<b>Métodos wait y notify</b></a></li>
+<li><a href="#s12">Vídeo 12<b>Interbloqueos</b></a></li>
+<li><a href="#resumen">Resumen<b>Chuleta final</b></a></li>
+</ul>
+</nav>
+<main>
+
+<section id="s1">
+<span class="num">Vídeo 1</span>
+<h2>Creación de hilos</h2>
+<h3>¿Qué es un hilo?</h3>
+<p>Un hilo es un flujo de ejecución: una "línea" de instrucciones que la CPU va recorriendo una detrás de otra. Todo proceso tiene al menos uno, el <b>hilo principal</b> (<code>main</code>), que ejecuta el contenido del método <code>main</code>. Dentro de un hilo las instrucciones son siempre <b>secuenciales</b>.</p>
+<h3>El problema: tareas independientes ejecutadas en fila</h3>
+<p>Imagina un programa que prepara el desayuno. Hacer tostadas no necesita nada del café, y viceversa. Sin hilos, el programa hace primero una tarea entera y después la otra:</p>
+<pre><code>public class Desayuno {
+    static void prepararTostadas() throws InterruptedException {
+        System.out.println("Ponemos el pan a tostar");
+        Thread.sleep(2000);          // simula una espera de 2 s
+        System.out.println("Echamos la sal");
+        Thread.sleep(2000);
+        System.out.println("Tostadas listas");
+    }
+    static void prepararCafe() throws InterruptedException {
+        System.out.println("Ponemos la cafetera");
+        Thread.sleep(2000);
+        System.out.println("Servimos el café");
+        Thread.sleep(2000);
+        System.out.println("Café listo");
+    }
+    public static void main(String[] args) {
+        try {
+            prepararTostadas();      // 4 s
+            prepararCafe();          // 4 s  -&gt; total 8 s
+        } catch (InterruptedException e) { e.printStackTrace(); }
+    }
+}</code></pre>
+<div class="box idea"><b>¿Por qué <code>Thread.sleep()</code>?</b>Es un método estático (no hace falta crear un <code>Thread</code> para llamarlo) que detiene el hilo actual unos milisegundos. En clase lo usamos para <i>simular</i> trabajos lentos reales: una petición web, una consulta a base de datos, una descarga. Para la CPU, 300 ms es una eternidad.</div>
+<div class="box warn"><b>InterruptedException</b>Cuando <code>sleep</code> puede lanzar esta excepción, Java te obliga a elegir: rodearlo con <code>try/catch</code> o declarar <code>throws InterruptedException</code> en el método. Declararla permite un único <code>try/catch</code> en el <code>main</code> en lugar de uno por método. Pero <b>ojo</b>: dentro de <code>run()</code> no puedes poner <code>throws</code>, porque estarías cambiando la firma del método heredado; allí el <code>try/catch</code> es obligatorio.</div>
+<h3>Forma 1: heredar de <code>Thread</code></h3>
+<pre><code>class Tostadora extends Thread {
+    @Override
+    public void run() {              // lo que se ejecutará en el hilo
+        try {
+            System.out.println("Ponemos el pan a tostar");
+            Thread.sleep(2000);
+            System.out.println("Tostadas listas");
+        } catch (InterruptedException e) {
+            System.out.println("Hilo interrumpido");
+        }
+    }
+}
+// En el main:
+Tostadora t = new Tostadora();
+t.start();            // lanza el hilo
+prepararCafe();       // el main sigue y ambas tareas se intercalan</code></pre>
+<h3>Forma 2: implementar <code>Runnable</code> (la recomendada)</h3>
+<p><code>Runnable</code> es una interfaz con un único método sin implementar: <code>run()</code>. Como <code>Runnable</code> no tiene <code>start()</code>, hay que envolverla en un <code>Thread</code>:</p>
+<pre><code>class Tostadora implements Runnable {
+    @Override
+    public void run() { /* mismo código de antes */ }
+}
+// En el main:
+Thread t = new Thread(new Tostadora());   // el constructor recibe un Runnable
+t.start();
+prepararCafe();</code></pre>
+<div class="box idea"><b>¿Por qué es mejor <code>Runnable</code>?</b>En Java una clase solo puede heredar de <i>una</i> clase. Si <code>Tostadora</code> extiende <code>Thread</code>, ya no puede extender nada más. Implementando una interfaz te queda libre la herencia.</div>
+<h3>Dos detalles que suelen fallar</h3>
+<ul>
+<li><b>El orden importa.</b> Si llamas a <code>prepararCafe()</code> <i>antes</i> de <code>t.start()</code>, el café se hace entero (4 s) y solo entonces arranca el hilo: no hay concurrencia y tarda el doble.</li>
+<li><b>El orden de salida cambia.</b> El planificador del sistema operativo decide cómo se intercalan los hilos, así que cada ejecución puede mostrar las líneas en distinto orden.</li>
+</ul>
+<div class="box ex"><b>Ejemplo mental</b>Descargar 10 archivos: sin hilos, el décimo espera a que terminen los nueve anteriores. Con un hilo por descarga, avanzan todos a la vez.</div>
+</section>
+
+<section id="s2">
+<span class="num">Vídeo 2</span>
+<h2>Creación de hilos con clases anónimas y expresiones lambda</h2>
+<p>Son dos sintaxis para escribir lo mismo con menos código, cuando la clase del hilo solo se va a usar <b>una vez</b>.</p>
+<h3>Clase anónima</h3>
+<p>Una clase sin nombre que implementa una interfaz (o clase abstracta) y se define e instancia justo donde se necesita:</p>
+<pre><code>public static void main(String[] args) {
+    Thread t = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            System.out.println("Preparando café en otro hilo");
+        }
+    });
+    t.start();
+    prepararTostadas();
+}</code></pre>
+<div class="box warn"><b>No se instancia la interfaz</b>Aunque se lea <code>new Runnable()</code>, Java no crea una instancia de la interfaz (imposible en cualquier lenguaje): el compilador genera por debajo una clase sin nombre que la implementa y crea un objeto de <i>esa</i> clase.</div>
+<h3>Reglas de acceso (clase anónima y lambda)</h3>
+<p>La clase anónima está <i>anidada</i> en la clase que la contiene, y eso condiciona lo que puede tocar:</p>
+<div class="tw"><table>
+<tr><th>Elemento</th><th>¿Leer?</th><th>¿Modificar?</th></tr>
+<tr><td>Atributos y métodos de la clase padre (p. ej. <code>contador</code>)</td><td>Sí</td><td>Sí</td></tr>
+<tr><td>Variables locales del método donde se define</td><td>Sí</td><td><b>No</b> (deben ser <code>final</code> o <i>effectively final</i>)</td></tr>
+</table></div>
+<pre><code>public class Main {
+    static int contador = 0;                // atributo
+    public static void main(String[] args) {
+        String texto = "Contando";          // variable local
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                for (int i = 0; i &lt; 5; i++) {
+                    contador++;                     // OK: atributo
+                    System.out.println(texto + " " + contador);  // OK: solo leer
+                    // texto = "otra";             // ERROR de compilación
+                }
+            }
+        });
+        t.start();
+    }
+}</code></pre>
+<h3>Expresión lambda (desde Java 8)</h3>
+<p>Una lambda es un bloque de código con parámetros de entrada y, opcionalmente, un valor de retorno: básicamente un método sin nombre que se pasa como argumento. Sintaxis: <code>(parámetros) -&gt; { código }</code>.</p>
+<pre><code>Thread t = new Thread(() -&gt; {      // () porque run() no recibe parámetros
+    System.out.println("Hola desde una lambda");
+});
+t.start();</code></pre>
+<div class="box idea"><b>¿Cuándo se puede usar una lambda?</b>Cuando un método o constructor espera un objeto de una <b>interfaz con un único método abstracto</b> (interfaz funcional). <code>Runnable</code> cumple: solo tiene <code>run()</code>.</div>
+<div class="box ex"><b>Regla práctica</b>Si ese trozo de código lo usas en un solo sitio: lambda o clase anónima. Si lo necesitas en varios lugares: crea una clase con nombre que implemente <code>Runnable</code> y reutilízala.</div>
+</section>
+
+<section id="s3">
+<span class="num">Vídeo 3</span>
+<h2>Información sobre hilos</h2>
+<p>Cada hilo guarda atributos que se consultan con getters de la clase <code>Thread</code> y, en algunos casos, se cambian con setters.</p>
+<div class="tw"><table>
+<tr><th>Método</th><th>Qué devuelve / hace</th></tr>
+<tr><td><code>getId()</code></td><td>Identificador numérico único, asignado al crear el hilo. No se puede cambiar. (En Java 19+ se recomienda <code>threadId()</code>.)</td></tr>
+<tr><td><code>getName()</code> / <code>setName(String)</code></td><td>Nombre del hilo; por defecto <code>Thread-0</code>, <code>Thread-1</code>… (el principal se llama <code>main</code>). Útil para identificarlos en la salida.</td></tr>
+<tr><td><code>getPriority()</code> / <code>setPriority(int)</code></td><td>Prioridad de 1 a 10. Constantes: <code>Thread.MIN_PRIORITY</code> (1), <code>NORM_PRIORITY</code> (5, valor por defecto), <code>MAX_PRIORITY</code> (10). Más prioridad = más preferencia del planificador (no garantía absoluta).</td></tr>
+<tr><td><code>getState()</code></td><td>Estado actual (solo lectura), un valor de <code>Thread.State</code>.</td></tr>
+<tr><td><code>isAlive()</code></td><td><code>true</code> si el hilo ya arrancó y aún no ha terminado.</td></tr>
+</table></div>
+<h3>Los estados de un hilo</h3>
+<div class="tw"><table>
+<tr><th>Estado</th><th>Significado</th></tr>
+<tr><td><code>NEW</code></td><td>Creado, pero aún no se ha llamado a <code>start()</code>.</td></tr>
+<tr><td><code>RUNNABLE</code></td><td>Ejecutándose (o listo para hacerlo) en la CPU.</td></tr>
+<tr><td><code>BLOCKED</code></td><td>Bloqueado esperando un recurso ocupado (un fichero, una zona de memoria).</td></tr>
+<tr><td><code>WAITING</code></td><td>Espera indefinida hasta que ocurra un evento (<code>wait()</code>, <code>join()</code> sin tiempo).</td></tr>
+<tr><td><code>TIMED_WAITING</code></td><td>Espera de duración limitada (<code>sleep</code>, o <code>wait</code>/<code>join</code> con timeout).</td></tr>
+<tr><td><code>TERMINATED</code></td><td>Ha ejecutado todas sus instrucciones.</td></tr>
+</table></div>
+<h3>Ejemplo: consultar los atributos de un hilo lanzado</h3>
+<pre><code>Thread t = new Thread(() -&gt; {
+    for (int i = 0; i &lt; 5; i++) {
+        System.out.println("Hola, soy un hilo");
+        try { Thread.sleep(1000); } catch (InterruptedException e) {}
+    }
+});
+t.setName("Saludador");
+t.setPriority(Thread.MAX_PRIORITY);
+System.out.println(t.getState());   // NEW (aún sin start)
+t.start();
+System.out.println(t.getName() + " | prioridad " + t.getPriority()
+                   + " | estado " + t.getState() + " | vivo " + t.isAlive());
+// Probablemente: TIMED_WAITING, porque el hilo está dentro del sleep</code></pre>
+<h3>Que un hilo consulte sus propios datos</h3>
+<p><code>Thread.currentThread()</code> es un método estático que devuelve el objeto <code>Thread</code> del hilo que está ejecutando esa línea:</p>
+<pre><code>Thread yo = Thread.currentThread();
+System.out.println(yo.getName());    // "main" si lo llamamos en el main
+System.out.println(yo.getState());   // RUNNABLE: si está ejecutando esta línea, está corriendo</code></pre>
+<h3>Esperar a que otro hilo termine (versión "a mano")</h3>
+<pre><code>t.start();
+while (t.isAlive()) {                // o: t.getState() != Thread.State.TERMINATED
+    try { Thread.sleep(1000); } catch (InterruptedException e) {}
+}
+System.out.println("Adiós");         // se muestra al acabar el hilo</code></pre>
+<div class="box warn"><b>No es la mejor solución</b>Con espera corta gastas CPU comprobando sin parar; con espera larga pierdes tiempo tras terminar el hilo. La solución buena es <code>join()</code> (vídeo 4).</div>
+</section>
+
+<section id="s4">
+<span class="num">Vídeo 4</span>
+<h2>Suspensión de hilos</h2>
+<p>Suspender un hilo es detener su ejecución de forma temporal: porque espera una condición, la liberación de un recurso, el fin de otro hilo, o simplemente para no saturar. Ejemplo típico: una app de chat que pregunta al servidor "¿hay mensajes nuevos?" cada 100-200 ms. Para el usuario parece instantáneo, pero no se hacen miles de peticiones inútiles por segundo.</p>
+<h3>Las cuatro herramientas</h3>
+<h3>1. <code>Thread.sleep(ms)</code></h3>
+<p>Suspende el hilo actual el tiempo indicado en milisegundos. Exige capturar <code>InterruptedException</code>.</p>
+<h3>2. <code>TimeUnit</code></h3>
+<p>Hace lo mismo con más legibilidad, porque eliges la unidad y no calculas milisegundos:</p>
+<pre><code>import java.util.concurrent.TimeUnit;
+TimeUnit.SECONDS.sleep(2);        // 2 segundos
+TimeUnit.MILLISECONDS.sleep(500); // 500 ms
+TimeUnit.MINUTES.sleep(2);        // 2 minutos (en vez de 120000)</code></pre>
+<p>Conviene conocerla porque muchos métodos de concurrencia reciben un objeto <code>TimeUnit</code> como parámetro.</p>
+<h3>3. <code>Thread.yield()</code></h3>
+<p>No suspende nada por sí mismo. Es un aviso al planificador: "no estoy haciendo nada importante, si quieres ceder la CPU a otro hilo, adelante". Puede ser ignorado.</p>
+<h3>4. <code>join()</code></h3>
+<p>Suspende el hilo que lo llama hasta que <b>termine</b> el hilo sobre el que se invoca. Es una <i>llamada bloqueante</i>.</p>
+<pre><code>Thread t = new Thread(() -&gt; {
+    Random r = new Random();
+    for (int i = 0; i &lt; 10; i++) {
+        try { Thread.sleep(r.nextInt(1500)); } catch (InterruptedException e) {}
+        System.out.println(i);
+    }
+});
+t.start();
+try {
+    t.join();                         // el main se queda esperando aquí
+} catch (InterruptedException e) { e.printStackTrace(); }
+System.out.println("El hilo ha finalizado");   // siempre después del 9</code></pre>
+<div class="box idea"><b>Espera activa vs. <code>join()</code></b>Un <code>while(t.isAlive()){}</code> es una <i>espera activa</i>: preguntas "¿has terminado?" sin parar y ocupas CPU, impidiendo incluso que el otro hilo avance. Con <code>join()</code> el hilo duerme y el sistema lo despierta justo cuando el otro acaba: sin gasto y sin retrasos.</div>
+<h3>5. <code>wait()</code> (adelanto)</h3>
+<p>Suspende el hilo hasta recibir una notificación (<code>notify</code>) de que debe continuar. Se estudiará con la sincronización de hilos.</p>
+</section>
+
+<section id="s5">
+<span class="num">Vídeo 5</span>
+<h2>Finalización de hilos con flags</h2>
+<p>Muchos hilos ejecutan tareas repetitivas un número de veces desconocido: en una videollamada, un hilo envía vídeo y otro lo recibe, cada uno en un bucle hasta que se cuelga. Hay que poder decirles "para".</p>
+<div class="box warn"><b>No uses <code>stop()</code></b>Existe <code>Thread.stop()</code>, pero está obsoleto (<i>deprecated</i>) por problemas de seguridad: corta el hilo en cualquier punto y puede dejar datos a medias. Las dos alternativas son los <b>flags</b> y las <b>interrupciones</b>.</div>
+<h3>El flag: una variable booleana</h3>
+<p>Sustituimos el <code>while(true)</code> (mala práctica) por <code>while(ejecutar)</code> y damos al hilo un método para ponerla a <code>false</code>:</p>
+<pre><code>class Cafetera implements Runnable {
+    private volatile boolean ejecutar = true;   // el flag
+    private int contador = 0;
+
+    public void detener() { ejecutar = false; }
+    public int getContador() { return contador; }
+
+    @Override
+    public void run() {
+        while (ejecutar) {
+            try {
+                Thread.sleep(200); System.out.println("Ponemos la cafetera");
+                Thread.sleep(200); System.out.println("Servimos el café");
+                Thread.sleep(200); System.out.println("Echamos la leche");
+                contador++;
+                System.out.println("Cafés preparados: " + contador);
+            } catch (InterruptedException e) { }
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        Cafetera c = new Cafetera();
+        Thread t = new Thread(c);
+        t.start();
+        new Scanner(System.in).nextLine();   // espera a que pulses Enter
+        c.detener();                         // ponemos el flag a false
+        t.join();                            // ¡esperamos a que termine de verdad!
+        System.out.println("Total: " + c.getContador() + " cafés");
+    }
+}</code></pre>
+<div class="box idea"><b>Detalle sobre <code>volatile</code></b>Al compartir una variable entre hilos conviene declararla <code>volatile</code> para garantizar que el hilo de la cafetera vea el cambio hecho desde el <code>main</code>. (En el vídeo no se usa; es un añadido de buena práctica.)</div>
+<h3>Qué ocurre al llamar a <code>detener()</code></h3>
+<p>El hilo <b>no se detiene al instante</b>. Si está a mitad de un café, termina <i>todas</i> las instrucciones del cuerpo del bucle, incrementa el contador y solo al volver a comprobar <code>while(ejecutar)</code> sale. Ventaja: la tarea en curso siempre se completa.</p>
+<div class="box warn"><b>Sin <code>join()</code> el resultado puede ser falso</b>Si el <code>main</code> muestra <code>getContador()</code> justo tras <code>detener()</code>, el hilo puede estar aún preparando el café nº 5: el main imprimiría 4 y el hilo después terminaría el 5. Regla: si un hilo principal quiere un resultado calculado por otro, debe hacer <code>join()</code> primero.</div>
+<p>Este método sirve en cualquier lenguaje de programación y es muy utilizado por su sencillez.</p>
+</section>
+
+<section id="s6">
+<span class="num">Vídeo 6</span>
+<h2>Finalización de hilos con interrupciones</h2>
+<p>Es el mecanismo específico de Java. Se llama a <code>t.interrupt()</code> y se le envía al hilo una señal de interrupción. Qué ocurre depende de lo que esté haciendo el hilo:</p>
+<div class="tw"><table>
+<tr><th>Situación del hilo</th><th>Efecto de <code>interrupt()</code></th></tr>
+<tr><td>Suspendido (<code>sleep</code>, <code>wait</code>, <code>join</code>)</td><td>Ese método lanza <code>InterruptedException</code>. Con ello la interrupción queda "gestionada" y <b>el indicador interno vuelve a <code>false</code></b>.</td></tr>
+<tr><td>Ejecutando código normal</td><td>No salta ninguna excepción; solo se marca el indicador, y <code>isInterrupted()</code> devolverá <code>true</code>.</td></tr>
+</table></div>
+<h3>Error típico: el <code>try/catch</code> dentro del bucle</h3>
+<pre><code>// MAL: el hilo NO termina
+public void run() {
+    while (!Thread.currentThread().isInterrupted()) {
+        try {
+            Thread.sleep(200);
+            // ... preparar café ...
+        } catch (InterruptedException e) {
+            System.out.println("Hilo interrumpido");
+        }                 // tras el catch, isInterrupted() es false → sigue el bucle
+    }
+}</code></pre>
+<p>La excepción se captura, el indicador se pone a <code>false</code> al haberse gestionado, la condición del <code>while</code> dice "no interrumpido" y el hilo continúa haciendo cafés por mucho que pulses Enter.</p>
+<h3>Solución: el bucle dentro del <code>try</code></h3>
+<pre><code>// BIEN
+public void run() {
+    try {
+        while (!Thread.currentThread().isInterrupted()) {
+            Thread.sleep(200); System.out.println("Ponemos la cafetera");
+            Thread.sleep(200); System.out.println("Servimos el café");
+            Thread.sleep(200); System.out.println("Echamos la leche");
+            contador++;
+        }
+    } catch (InterruptedException e) {
+        System.out.println("Hilo interrumpido");   // salimos del bucle y de run()
+    }
+}
+// En el main:  t.interrupt();  t.join();</code></pre>
+<p>Ahora la excepción saca al hilo del bucle directamente y <code>run()</code> termina.</p>
+<h3>Consecuencias a tener en cuenta</h3>
+<ul>
+<li><b>El café puede quedar a medias.</b> Si la excepción salta durante un <code>sleep</code>, no se ejecuta el resto del cuerpo (ni el incremento del contador). Con flags, la iteración siempre se completa; con interrupciones, no.</li>
+<li><b>La condición del <code>while</code> sigue siendo necesaria.</b> Si el hilo está ejecutando código largo sin <code>sleep/join/wait</code>, ninguna excepción saltará y solo <code>isInterrupted()</code> nos avisará. Hay que consultarlo nosotros.</li>
+</ul>
+<pre><code>// Hilo que hace cálculos sin métodos que suspendan
+while (!Thread.currentThread().isInterrupted()) {
+    // ... muchas instrucciones ...
+    contador++;                       // esta iteración SÍ se completa
+}
+// Al volver a la condición, detecta la interrupción y sale</code></pre>
+<div class="box ex"><b>Elegir entre flags e interrupciones</b>Flags: simples, universales, la iteración termina limpia. Interrupciones: despiertan al hilo aunque esté dormido o esperando, pero requieren más cuidado con la excepción y la posición del <code>try/catch</code>.</div>
+</section>
+
+<section id="s7">
+<span class="num">Vídeo 7</span>
+<h2>Memoria compartida</h2>
+<p>Hasta ahora los hilos eran independientes. Pero a veces varios hilos hacen partes de una misma tarea o uno necesita el resultado de otro. Una técnica para comunicarlos es la <b>memoria compartida</b>: que varios hilos accedan al mismo espacio de memoria, es decir, <b>al mismo objeto</b>.</p>
+<h3>Sin compartir vs. compartiendo</h3>
+<pre><code>class Contador implements Runnable {
+    private int contador = 0;
+    public void run() {
+        for (int i = 0; i &lt; 100; i++) contador++;
+        System.out.println(Thread.currentThread().getName() + ": " + contador);
+    }
+}
+
+// SIN compartir: una instancia por hilo (5 contadores) → cada hilo acaba en 100
+for (int i = 1; i &lt;= 5; i++) {
+    Contador c = new Contador();
+    new Thread(c, "Hilo " + i).start();
+}
+
+// COMPARTIENDO: una sola instancia para los 5 hilos → un único contador
+Contador c = new Contador();
+for (int i = 1; i &lt;= 5; i++) new Thread(c, "Hilo " + i).start();   // el total llega a 500</code></pre>
+<p>La única diferencia es dónde se hace el <code>new Contador()</code>: dentro del bucle (uno por hilo) o fuera (uno para todos). Con lambdas es igual: una variable local dentro de la lambda es de cada hilo; si la sacas fuera como atributo <code>static</code> (el <code>main</code> es estático y solo accede a atributos estáticos), todos comparten una.</p>
+<div class="box warn"><b>Resultados extraños</b>Con 100 iteraciones los hilos muestran valores desordenados (300, 400, 100…) porque se alternan, aunque el contador acabe en 500. Con 1 millón de iteraciones por hilo el total <i>debería</i> ser 5 millones, pero no llega y cambia en cada ejecución: son problemas de concurrencia.</div>
+<div class="box idea"><b>Lo peligroso</b>Puedes ejecutar el programa 200 veces sin fallo y que falle la siguiente. En producción puede pasar una vez al mes. Con un punto de ruptura (<i>breakpoint</i>) además el fallo desaparece, por eso es tan difícil de depurar.</div>
+</section>
+
+<section id="s8">
+<span class="num">Vídeo 8</span>
+<h2>Condición de carrera y sección crítica</h2>
+<div class="box idea"><b>Condición de carrera</b>Comportamiento del software cuyo resultado <b>depende del orden</b> en que se ejecutan las operaciones concurrentes. Si al cambiar el orden de los hilos obtienes un resultado distinto, hay condición de carrera. Aparece al acceder o modificar un recurso compartido.</div>
+<div class="box idea"><b>Sección crítica</b>El conjunto de instrucciones que acceden o modifican un recurso compartido.</div>
+<h3>Ejemplo de la cuenta bancaria (se reutiliza en los siguientes vídeos)</h3>
+<p>Dos hilos comparten una <code>Cuenta</code>: uno hace 1000 ingresos de 100 € y otro 1000 reintegros de 100 €. El saldo final debería ser 0.</p>
+<pre><code>class Cuenta {
+    private int saldo = 0;
+    public int getSaldo() { return saldo; }
+    public void ingresar(int cantidad)  { saldo += cantidad; }   // sección crítica
+    public void reintegrar(int cantidad){ saldo -= cantidad; }   // sección crítica
+}
+class HiloIngreso implements Runnable {
+    private Cuenta cuenta;
+    public HiloIngreso(Cuenta c) { this.cuenta = c; }
+    public void run() { for (int i = 0; i &lt; 1000; i++) cuenta.ingresar(100); }
+}
+// HiloReintegro es idéntico, pero llama a cuenta.reintegrar(100)
+
+public static void main(String[] args) throws InterruptedException {
+    Cuenta c = new Cuenta();                       // el MISMO objeto para ambos
+    Thread t1 = new Thread(new HiloIngreso(c));
+    Thread t2 = new Thread(new HiloReintegro(c));
+    t1.start(); t2.start();
+    t1.join();  t2.join();
+    System.out.println("Saldo final: " + c.getSaldo());   // -900, -300... ¡no siempre 0!
+}</code></pre>
+<div class="box warn"><b>¿Dónde está la sección crítica?</b>En <code>ingresar()</code> y <code>reintegrar()</code>, porque ambos modifican <code>saldo</code>. No en el <code>run()</code> de cada hilo: ahí solo se llama a esos métodos. Además, con pocas operaciones (p. ej. 10) el error casi no aparece, pero el código sigue siendo incorrecto.</div>
+</section>
+
+<section id="s9">
+<span class="num">Vídeo 9</span>
+<h2>Monitores</h2>
+<p>La <b>exclusión mutua</b> garantiza que si un hilo está ejecutando una sección crítica, ningún otro puede ejecutarla. Java la implementa con <b>monitores</b>, que gestiona internamente: tú no los creas ni los instancias, pero conviene entender cómo funcionan.</p>
+<div class="box ex"><b>Metáfora</b>El monitor es un guardia de seguridad con una única llave. Un hilo con la llave entra a la sección crítica y no la devuelve hasta terminar; los demás esperan fuera.</div>
+<h3>Todo objeto es un monitor</h3>
+<p>El mecanismo está en la clase <code>Object</code>, de la que heredan todas las clases, así que <b>cualquier objeto</b> puede actuar como monitor. Hay dos usos válidos: que un objeto controle <b>sus propias</b> secciones críticas (el objeto <code>cuenta</code> protege <code>ingresar</code> y <code>reintegrar</code>), o que una instancia cualquiera (por ejemplo, de una clase <code>Perro</code>) controle las secciones críticas de <b>otro</b> objeto.</p>
+<h3>Las tres zonas de un monitor</h3>
+<div class="tw"><table>
+<tr><th>Zona</th><th>Qué es</th></tr>
+<tr><td><code>Entry set</code></td><td>La cola de entrada: hilos que piden ejecutar una sección crítica.</td></tr>
+<tr><td><code>Owner</code></td><td>El hilo que posee el monitor (tiene la "llave") y ejecuta la sección crítica.</td></tr>
+<tr><td><code>Wait set</code></td><td>Hilos suspendidos esperando una notificación (se ve en el vídeo 11).</td></tr>
+</table></div>
+<h3>Ejemplo paso a paso</h3>
+<ul>
+<li><code>HiloReintegro</code> quiere ejecutar <code>reintegrar()</code> y pasa al entry set. Como nadie es <i>owner</i>, el monitor le da la llave: <b>adquiere</b> el monitor.</li>
+<li><code>HiloIngreso</code> quiere ejecutar <code>ingresar()</code>. El monitor ve que hay un owner y lo deja esperando en el entry set.</li>
+<li>Cuando <code>HiloReintegro</code> termina, <b>libera</b> el monitor y <code>HiloIngreso</code> pasa a ser el owner.</li>
+</ul>
+</section>
+
+<section id="s10">
+<span class="num">Vídeo 10</span>
+<h2>Métodos y bloques sincronizados</h2>
+<p>El código es sencillísimo; lo difícil es <b>detectar las secciones críticas</b> y entender qué ocurre por debajo.</p>
+<h3>Métodos sincronizados</h3>
+<p>Basta con añadir la palabra reservada <code>synchronized</code>. Si un hilo ejecuta uno de ellos, ningún otro hilo puede ejecutar <i>ninguno</i> de los métodos sincronizados de ese objeto (el propio objeto es el monitor):</p>
+<pre><code>class Cuenta {
+    private int saldo = 0;
+    public synchronized void ingresar(int cantidad)   { saldo += cantidad; }
+    public synchronized void reintegrar(int cantidad) { saldo -= cantidad; }
+    public int getSaldo() { return saldo; }
+}
+// Ahora el saldo final es siempre 0</code></pre>
+<p>Limitación: necesitas poder modificar la clase. Si viene de una librería ya compilada, no puedes añadirle <code>synchronized</code>.</p>
+<h3>Bloques sincronizados</h3>
+<p>Se pone <code>synchronized</code> y entre paréntesis el objeto que hará de monitor, alrededor de la sección crítica. Así no tocas la clase <code>Cuenta</code>:</p>
+<pre><code>// En HiloIngreso.run()
+for (int i = 0; i &lt; 1000; i++) {
+    synchronized (cuenta) {            // monitor = cuenta
+        cuenta.ingresar(100);
+    }
+}
+// En HiloReintegro.run()
+for (int i = 0; i &lt; 1000; i++) {
+    synchronized (cuenta) {            // ¡el MISMO monitor!
+        cuenta.reintegrar(100);
+    }
+}</code></pre>
+<div class="box warn"><b>El monitor debe ser el mismo</b>Puede ser cualquier objeto (en clase se usó una instancia de <code>Perro</code> compartida por ambos hilos), pero los bloques que quieras excluir entre sí deben usar <b>el mismo objeto</b>. Si un hilo usa <code>perro</code> y el otro <code>cuenta</code>, hay dos monitores: dos hilos no ejecutarán <code>ingresar</code> a la vez, pero sí un ingreso y un reintegro a la vez, y el error vuelve.</div>
+<div class="box idea"><b>Diseño</b>Si tienes 4 fragmentos que no pueden ejecutarse a la vez entre sí, necesitas un monitor compartido por esos 4. Si otros 2 fragmentos son independientes de los anteriores pero exclusivos entre ellos, necesitan otro monitor distinto.</div>
+</section>
+
+<section id="s11">
+<span class="num">Vídeo 11</span>
+<h2>Métodos wait y notify</h2>
+<p>Resuelven cómo hacer que un hilo <b>avise a otro</b> de que ocurrió un evento. Caso: el hilo de reintegros no debe sacar dinero si el saldo es menor de 100. Un bucle con <code>sleep</code> funciona pero es ineficiente (espera de más o consume CPU). La solución son <code>wait()</code> y <code>notify()</code>, métodos de <code>Object</code> disponibles en todos los objetos.</p>
+<ul>
+<li><code>wait()</code>: suspende el hilo (pasa al <i>wait set</i>) y <b>libera el monitor</b>.</li>
+<li><code>notify()</code>: despierta a <b>uno</b> de los hilos que esperan en ese mismo objeto. <code>notifyAll()</code> los despierta a todos.</li>
+</ul>
+<pre><code>// HiloReintegro.run()
+for (int i = 0; i &lt; 1000; i++) {
+    synchronized (cuenta) {
+        while (cuenta.getSaldo() &lt; 100) {          // ¡while, no if!
+            System.out.println("No hay saldo suficiente");
+            try { cuenta.wait(); }                  // espera y libera el monitor
+            catch (InterruptedException e) { return; }
+        }
+        cuenta.reintegrar(100);
+    }
+}
+
+// HiloIngreso.run()
+for (int i = 0; i &lt; 1000; i++) {
+    synchronized (cuenta) {
+        cuenta.ingresar(100);
+        cuenta.notify();                            // avisa: hay saldo
+    }
+}</code></pre>
+<h3>Qué ocurre, en orden</h3>
+<ul>
+<li>El hilo de reintegros posee el monitor, ve saldo 0 y llama a <code>wait()</code>: pasa al wait set y suelta el monitor.</li>
+<li>El de ingresos entra, ingresa y llama a <code>notify()</code>. El de reintegros se despierta, pero <b>pasa al entry set</b> a esperar turno.</li>
+<li>Cuando el de ingresos sale del bloque y libera el monitor, el de reintegros lo adquiere, <b>vuelve a comprobar</b> la condición y, si hay saldo, reintegra.</li>
+</ul>
+<div class="box warn"><b>Reglas obligatorias</b><ul style="margin:4px 0 0"><li><code>wait</code> y <code>notify</code> solo dentro de un bloque o método <code>synchronized</code>; si no, el compilador da error.</li><li><code>wait</code> siempre dentro de un <code>while</code> con la condición, nunca un <code>if</code>, para evitar los <i>spurious wake-ups</i>: te despiertan, pero otro hilo ya dejó la cuenta a 0, así que hay que recomprobar.</li><li><code>notify</code> no cede la ejecución: el que notifica sigue hasta liberar el monitor; el planificador decide cuándo corre el otro.</li></ul></div>
+<div class="box ex"><b>Otro ejemplo (ejemplo 22)</b>Café con leche: la tarea de la leche depende de la del café. La del café hace <code>notify</code> al verter el café en la taza, y la de la leche hace <code>wait</code> hasta recibirlo.</div>
+</section>
+
+<section id="s12">
+<span class="num">Vídeo 12</span>
+<h2>Interbloqueos (deadlock)</h2>
+<p>Con <b>varios recursos compartidos</b> aparece el interbloqueo: dos hilos se quedan esperando indefinidamente un monitor que tiene el otro, y la aplicación se cuelga. Ocurre en una transferencia entre cuentas A y B, o al reservar varios asientos: hay que bloquear varios recursos.</p>
+<pre><code>static Object A = new Object(), B = new Object();
+
+static void hilo1() {
+    synchronized (A) {                       // bloquea A...
+        dormir(100);
+        synchronized (B) { System.out.println("Hilo 1 tiene A y B"); }   // ...y quiere B
+    }
+}
+static void hilo2() {
+    synchronized (B) {                       // bloquea B...
+        dormir(100);
+        synchronized (A) { System.out.println("Hilo 2 tiene B y A"); }   // ...y quiere A
+    }
+}
+public static void main(String[] args) {
+    new Thread(Main::hilo1).start();         // referencia a método
+    new Thread(Main::hilo2).start();
+}</code></pre>
+<p>El hilo 1 tiene A y espera B; el hilo 2 tiene B y espera A. Ninguno cede: <b>interbloqueo</b> (el <code>sleep</code> solo sirve para forzarlo en el ejemplo).</p>
+<div class="box idea"><b>Referencia a método</b><code>Main::hilo1</code> equivale a la lambda <code>() -&gt; hilo1()</code>. Solo vale si el método <b>no recibe parámetros</b>, porque no se ponen paréntesis (llamarías al método en lugar de pasarlo).</div>
+<h3>Regla de oro: bloquear siempre en el mismo orden</h3>
+<p>Si <code>hilo2</code> también bloquea primero A y luego B, el primero que llegue lo ejecuta entero y libera ambos; el segundo espera y no hay deadlock.</p>
+<h3>Cuando el orden no lo controlas: el inventario de jugadores</h3>
+<p>Un método <code>intercambiar(origen, destino)</code> bloquea ambos inventarios. Un hilo llama <code>intercambiar(aitor, beatriz)</code> y otro <code>intercambiar(beatriz, aitor)</code>: orden cruzado, deadlock. Pedir al programador "usa siempre el mismo orden" es una solución chapucera: tu código debe protegerse solo. La solución correcta: dar un <b>identificador único</b> a cada recurso y bloquear siempre de menor a mayor ID, ordenando dentro del método:</p>
+<pre><code>class Inventario {
+    private final int id = new Random().nextInt();   // identificador (en real, único de verdad)
+    public int getId() { return id; }
+    // ... nombre, objetos, quitar(), añadir() ...
+}
+
+static void intercambiar(Inventario origen, Inventario destino) {
+    if (origen.getId() &gt; destino.getId()) {          // ordenamos por ID
+        Inventario aux = origen;                      // variable auxiliar para el intercambio
+        origen = destino;
+        destino = aux;
+    }
+    synchronized (origen) {
+        synchronized (destino) {
+            // quitar el objeto al origen real y dárselo al destino real
+        }
+    }
+}</code></pre>
+<div class="box warn"><b>Ojo con la lógica real</b>Al reordenar, la variable <code>origen</code> ya no es necesariamente de quien sale el objeto. En el vídeo se simplifica con un contador; en un caso real conserva aparte quién es el emisor y quién el receptor, y usa el orden por ID solo para bloquear. Un <code>Random</code> puede repetir IDs; en un sistema real el identificador debería ser realmente único (p. ej. desde una base de datos).</div>
+</section>
+
+<section id="resumen">
+<span class="num">Resumen</span>
+<h2>Chuleta final</h2>
+<div class="tw"><table>
+<tr><th>Quiero…</th><th>Uso…</th></tr>
+<tr><td>Crear un hilo</td><td><code>new Thread(runnable).start()</code>; mejor <code>Runnable</code> que heredar de <code>Thread</code></td></tr>
+<tr><td>Código corto de un solo uso</td><td>Clase anónima o lambda <code>() -&gt; { ... }</code></td></tr>
+<tr><td>Ver nombre, prioridad, estado</td><td><code>getName()</code>, <code>getPriority()</code>, <code>getState()</code>, <code>isAlive()</code></td></tr>
+<tr><td>Saber qué hilo soy</td><td><code>Thread.currentThread()</code></td></tr>
+<tr><td>Pausar un tiempo</td><td><code>Thread.sleep()</code> / <code>TimeUnit.X.sleep()</code></td></tr>
+<tr><td>Esperar a que otro hilo acabe</td><td><code>t.join()</code> (nunca espera activa)</td></tr>
+<tr><td>Detener un hilo suavemente</td><td>Flag booleano + <code>join()</code></td></tr>
+<tr><td>Detener un hilo dormido o esperando</td><td><code>interrupt()</code> + bucle dentro del <code>try</code></td></tr>
+<tr><td>Compartir datos entre hilos</td><td>Pasar el <b>mismo objeto</b> a todos (cuidado con las condiciones de carrera)</td></tr>
+<tr><td>Proteger una sección crítica</td><td><code>synchronized</code> en el método, o <code>synchronized (obj) { }</code> con el mismo objeto como monitor</td></tr>
+<tr><td>Que un hilo espere a una condición</td><td><code>while (!cond) obj.wait();</code> + <code>obj.notify()</code>/<code>notifyAll()</code>, dentro de <code>synchronized</code></td></tr>
+<tr><td>Evitar interbloqueos</td><td>Bloquear los recursos siempre en el mismo orden (p. ej. por ID)</td></tr>
+<tr><td>Nunca</td><td><code>Thread.stop()</code> ni <code>while(true)</code> sin salida</td></tr>
+</table></div>
+</section>
+</main>
+</div>
+<footer>Programación de Servicios y Procesos · Hilos en Java</footer>
+<script>
+const links=[...document.querySelectorAll('nav a')];
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}})},{rootMargin:'-20% 0px -70% 0px'});
+document.querySelectorAll('section').forEach(x=>io.observe(x));
+links[0].classList.add('on');
+</script>
+</body>
+</html>
